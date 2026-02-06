@@ -1,50 +1,286 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mergington High School Activities</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <header>
-      <h1>Mergington High School</h1>
-      <h2>Extracurricular Activities</h2>
-    </header>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mergington High School - Activities</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    <main>
-      <section id="activities-container">
-        <h3>Available Activities</h3>
-        <div id="activities-list">
-          <!-- Activities will be loaded here -->
-          <p>Loading activities...</p>
-        </div>
-      </section>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-      <section id="signup-container">
-        <h3>Sign Up for an Activity</h3>
-        <form id="signup-form">
-          <div class="form-group">
-            <label for="email">Student Email:</label>
-            <input type="email" id="email" required placeholder="your-email@mergington.edu" />
-          </div>
-          <div class="form-group">
-            <label for="activity">Select Activity:</label>
-            <select id="activity" required>
-              <option value="">-- Select an activity --</option>
-              <!-- Activity options will be loaded here -->
-            </select>
-          </div>
-          <button type="submit">Sign Up</button>
-        </form>
-        <div id="message" class="hidden"></div>
-      </section>
-    </main>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-    <footer>
-      <p>&copy; 2023 Mergington High School</p>
-    </footer>
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
 
-    <script src="app.js"></script>
-  </body>
+        #activities-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .activity-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .activity-card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.6em;
+        }
+
+        .activity-card p {
+            color: #555;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .activity-card strong {
+            color: #333;
+        }
+
+        .capacity {
+            background: #f0f4ff;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 15px 0;
+            text-align: center;
+            color: #667eea;
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        .participants-section {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .participants-section h3 {
+            color: #667eea;
+            font-size: 1.1em;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .participants-section h3::before {
+            content: "👥";
+            font-size: 1.3em;
+        }
+
+        .participants-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .participants-list li {
+            color: #444;
+            padding: 6px 0;
+            padding-left: 24px;
+            position: relative;
+            font-size: 0.95em;
+        }
+
+        .participants-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .signup-section {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .email-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 0.95em;
+            transition: border-color 0.3s;
+        }
+
+        .email-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 0.9em;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 Mergington High School Activities</h1>
+        <div id="activities-container"></div>
+    </div>
+
+    <script>
+        async function loadActivities() {
+            try {
+                const response = await fetch('/activities');
+                const activities = await response.json();
+                renderActivities(activities);
+            } catch (error) {
+                console.error('Error loading activities:', error);
+            }
+        }
+
+        function renderActivities(activitiesData) {
+            const container = document.getElementById('activities-container');
+            container.innerHTML = '';
+
+            for (const [name, activity] of Object.entries(activitiesData)) {
+                const participantsList = activity.participants
+                    .map(p => `<li>${p}</li>`)
+                    .join('');
+                
+                const participantCount = activity.participants.length;
+                const capacityPercentage = (participantCount / activity.max_participants) * 100;
+                
+                const card = document.createElement('div');
+                card.className = 'activity-card';
+                
+                const titleElement = document.createElement('h2');
+                titleElement.textContent = name;
+                
+                card.innerHTML = `
+                    <p><strong>📝 Description:</strong> ${activity.description}</p>
+                    <p><strong>⏰ Schedule:</strong> ${activity.schedule}</p>
+                    
+                    <div class="capacity">
+                        <strong>Capacity:</strong> ${participantCount}/${activity.max_participants} (${capacityPercentage.toFixed(0)}%)
+                    </div>
+                    
+                    <div class="participants-section">
+                        <h3>Signed Up (${participantCount})</h3>
+                        <ul class="participants-list">
+                            ${participantsList || '<li style="color: #999; padding-left: 0;"><em>No participants yet</em></li>'}
+                        </ul>
+                    </div>
+                    
+                    <div class="signup-section">
+                        <input type="email" class="email-input" placeholder="your.email@mergington.edu">
+                        <button onclick="signupForActivity('${name}', this)">Sign Up</button>
+                    </div>
+                    <div class="error"></div>
+                `;
+                card.insertBefore(titleElement, card.firstChild);
+                container.appendChild(card);
+            }
+        }
+
+        async function signupForActivity(activityName, button) {
+            const card = button.closest('.activity-card');
+            const emailInput = card.querySelector('.email-input');
+            const errorDiv = card.querySelector('.error');
+            const email = emailInput.value.trim();
+
+            if (!email) {
+                showError(errorDiv, 'Please enter an email address');
+                return;
+            }
+
+            // Disable button during submission
+            button.disabled = true;
+            button.textContent = 'Signing up...';
+
+            try {
+                const response = await fetch(`/activities/${encodeURIComponent(activityName)}/signup?email=${encodeURIComponent(email)}`, {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    errorDiv.style.display = 'none';
+                    emailInput.value = '';
+                    
+                    // Wait a moment to ensure backend is updated, then reload
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                    await loadActivities();
+                } else {
+                    const error = await response.json();
+                    showError(errorDiv, error.detail || 'Signup failed');
+                }
+            } catch (error) {
+                showError(errorDiv, 'Error signing up. Please try again.');
+            } finally {
+                // Re-enable button
+                button.disabled = false;
+                button.textContent = 'Sign Up';
+            }
+        }
+
+        function showError(errorDiv, message) {
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 4000);
+        }
+
+        loadActivities();
+    </script>
+</body>
 </html>
