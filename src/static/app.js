@@ -20,12 +20,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const spotsLeft = details.max_participants - details.participants.length;
 
-        activityCard.innerHTML = `
-          <h4>${name}</h4>
-          <p>${details.description}</p>
-          <p><strong>Schedule:</strong> ${details.schedule}</p>
-          <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
-        `;
+        const titleElement = document.createElement("h4");
+        titleElement.textContent = name;
+
+        const descElement = document.createElement("p");
+        descElement.textContent = details.description;
+
+        const scheduleElement = document.createElement("p");
+        scheduleElement.innerHTML = `<strong>Schedule:</strong> ${details.schedule}`;
+
+        const availElement = document.createElement("p");
+        availElement.textContent = `Availability: ${spotsLeft} spots left`;
+
+        activityCard.appendChild(titleElement);
+        activityCard.appendChild(descElement);
+        activityCard.appendChild(scheduleElement);
+        activityCard.appendChild(availElement);
 
         activitiesList.appendChild(activityCard);
 
@@ -62,6 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
         messageDiv.textContent = result.message;
         messageDiv.className = "success";
         signupForm.reset();
+        fetchActivities(); // Refresh activities list
       } else {
         messageDiv.textContent = result.detail || "An error occurred";
         messageDiv.className = "error";
