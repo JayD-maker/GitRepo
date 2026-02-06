@@ -243,6 +243,10 @@
                 return;
             }
 
+            // Disable button during submission
+            button.disabled = true;
+            button.textContent = 'Signing up...';
+
             try {
                 const response = await fetch(`/activities/${encodeURIComponent(activityName)}/signup?email=${encodeURIComponent(email)}`, {
                     method: 'POST'
@@ -251,13 +255,20 @@
                 if (response.ok) {
                     errorDiv.style.display = 'none';
                     emailInput.value = '';
-                    loadActivities();
+                    
+                    // Wait a moment to ensure backend is updated, then reload
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                    await loadActivities();
                 } else {
                     const error = await response.json();
                     showError(errorDiv, error.detail || 'Signup failed');
                 }
             } catch (error) {
                 showError(errorDiv, 'Error signing up. Please try again.');
+            } finally {
+                // Re-enable button
+                button.disabled = false;
+                button.textContent = 'Sign Up';
             }
         }
 
