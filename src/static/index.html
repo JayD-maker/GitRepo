@@ -202,8 +202,11 @@
                 
                 const card = document.createElement('div');
                 card.className = 'activity-card';
+                
+                const titleElement = document.createElement('h2');
+                titleElement.textContent = name;
+                
                 card.innerHTML = `
-                    <h2>${name}</h2>
                     <p><strong>📝 Description:</strong> ${activity.description}</p>
                     <p><strong>⏰ Schedule:</strong> ${activity.schedule}</p>
                     
@@ -224,6 +227,7 @@
                     </div>
                     <div class="error"></div>
                 `;
+                card.insertBefore(titleElement, card.firstChild);
                 container.appendChild(card);
             }
         }
